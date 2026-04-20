@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>戴静雯の小角落</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Long+Cang&family=Ma+Shan+Zheng&family=Zhi+Mang+Xing&family=Noto+Sans+SC:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="logged-out">
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+  <div class="bg-orb orb-4"></div>
+  <div class="floating floating-1">✦</div>
+  <div class="floating floating-2">♡</div>
+  <div class="floating floating-3">☁</div>
+  <div class="floating floating-4">✿</div>
+  <div class="floating floating-5">✧</div>
+  <div class="floating floating-6">❀</div>
+
+  <section class="login-screen" id="loginScreen">
+    <div class="login-card card glass">
+      <div class="login-copy">
+        <p class="eyebrow">A little gift for Jingwen</p>
+        <h1>欢迎来到<br><span class="site-title fancy-title"><span class="sub-part">小角落</span></span></h1>
+        <p class="subtitle">
+          这里会收下你的日记、灵感、碎碎念，还有每天想做的那些小事情哦~
+          它会一直陪伴着你，把普通的每一天都写成闪闪发亮的故事。
+        </p>
+
+        <div class="login-badges">
+          <span>日记记录</span>
+          <span>每日目标</span>
+          <span>灵感创作</span>
+          <span>温柔收藏</span>
+        </div>
+
+        <div class="gift-note">
+          <p>今日小句子</p>
+          <strong>“愿你被生活轻轻接住，也愿你一直是自己世界里最柔软、最明亮的光。”</strong>
+        </div>
+      </div>
+
+      <div class="login-panel">
+        <div class="panel-deco">
+          <span>☁</span>
+          <span>✿</span>
+          <span>♡</span>
+        </div>
+
+        <div class="panel-top">
+          <p class="soft-caption">先登录，再来写下你的故事</p>
+          <h2>登录进入</h2>
+          <p>输入名称和密码后，才会进入你的小小世界哦！</p>
+        </div>
+
+        <form id="loginForm" class="login-form">
+          <label>
+            名称
+            <input type="text" id="loginName" placeholder="请输入名称" autocomplete="off" required />
+          </label>
+          <label>
+            密码
+            <input type="password" id="loginPassword" placeholder="请输入密码" required />
+          </label>
+          <button class="btn primary wide" type="submit">进入</button>
+          <p id="loginError" class="login-error" aria-live="polite"></p>
+        </form>
+
+        <div class="login-hint">
+          <span>小提示</span>
+          <p>这是一个只属于戴静雯的小角落</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="secret-screen hidden" id="secretScreen">
+  <div class="secret-wrap">
+    <p class="secret-tag">Secret Letter</p>
+
+    <div class="secret-envelope">
+      <div class="secret-letter">
+        <p class="secret-eyebrow">To Jingwen</p>
+        <h2>一封悄悄话</h2>
+
+        <div class="secret-letter-body" id="secretLetterBody">
+          Hello,嘿,被你找到了这个小小的彩蛋。<br>
+          我个人觉得你应该不会太仔细研究这个网页（因为我也没有设计的特别好哈哈哈哈，技术问题，无伤大雅）。<br>
+          嗯，你猜我为什么要设计这么一个页面呀嘻嘻，嗯我就是觉得，大家要离别了，真的会有很多话舍不得对你们说。但是又想起来你们都不喜欢看小小作文。唔所以写少点哈哈哈哈哈。<br>
+          很震撼，能在国外，遇到老乡，我真的很高兴能和你认识，第一次见到你的时候就觉得，嘿，你莫名的好看哈哈哈哈，但是当时我还不知道你是无锡的，只能说实在是太太太巧啦！后面和你们接触的时候也确实真的觉得你们一家都超级有能量，（包括BOB都有很强的执行力嘞！哈哈哈哈）。而且其实我也知道很多事，所以一些话我真的不知道该怎么说。<br>
+          但是我觉得还是得给自己不留遗憾，不再想藏着了，也许你未来会发现吧。<br>
+          我代表20岁的杜译可向你表达喜欢。<br>
+          要我说我可能在考完高考后确实不再知道什么是喜欢啦，整个人都比较丧，来这里之前暑假好好修养了下，哈哈哈哈但是真的超级开心在这里认识了你们哦！（是不是有点跳跃，但是确实中间我不知道发生了啥哈哈哈哈每天都比较淡淡的）每一天！都很开心！<br>
+          我知道你后面肯定会有自己的安排，所以现在就祝你事业顺利！金币速速来！早晚能找到自由的生命！爱上每一天哦！
+        </div>
+
+        <p class="secret-sign">— from douko</p>
+      </div>
+    </div>
+
+    <button class="btn secondary" id="secretBackBtn" type="button">回到登录页</button>
+  </div>
+</section>
+
+  <div class="app-shell hidden" id="appShell">
+    <header class="topbar">
+      <div>
+        <p class="topbar-label">专属主页</p>
+        <h2 class="topbar-title fancy-title"><span class="name-part">戴静雯</span><span class="sub-part">の小角落</span></h2>
+      </div>
+      <div class="topbar-actions">
+        <span class="today-pill" id="todayLabel"></span>
+        <button class="btn secondary tiny-btn" id="logoutBtn">退出登录</button>
+      </div>
+    </header>
+
+    <section class="hero card glass">
+      <div class="hero-text">
+        <p class="eyebrow">Little Diary Universe</p>
+        <h1>你好呀，<span id="displayName">戴静雯</span> ✨</h1>
+        <p class="subtitle">
+          你可以写一点日记，贴一点灵感，再把小目标一个一个完成。
+          你不需要每天都很厉害哦，但你可以每天都留下属于自己的光，让自己天天开心！
+        </p>
+
+        <div class="hero-ribbon">
+          <span>☁ 慢慢来也没关系</span>
+          <span>✿ 今天也值得被记录</span>
+          <span>♡ 你一直很厉害哦</span>
+        </div>
+
+        <div class="hero-actions">
+          <button class="btn primary" id="scrollToEditor">写下今天的故事</button>
+          <button class="btn secondary" id="openNoteBtn">打开今日小纸条</button>
+        </div>
+      </div>
+
+      <div class="hero-side">
+        <div class="mini-card star-card glow-card">
+          <p>今日关键词</p>
+          <strong>温柔 / 灵感 / 有在慢慢变得更好</strong>
+        </div>
+        <div class="mini-stats">
+          <div>
+            <p>日记篇数</p>
+            <strong id="entryCount">0</strong>
+          </div>
+          <div>
+            <p>灵感便签</p>
+            <strong id="ideaCount">0</strong>
+          </div>
+          <div>
+            <p>目标任务</p>
+            <strong id="taskCount">0</strong>
+          </div>
+          <div>
+            <p>已完成</p>
+            <strong id="taskDoneCount">0</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="welcome-strip">
+      <article class="welcome-card card">
+        <span>🌷</span>
+        <h3>今日心愿</h3>
+        <p>就按自己的节奏生活，自己看到的小小世界是自己的哦~</p>
+      </article>
+      <article class="welcome-card card">
+        <span>✨</span>
+        <h3>温柔提醒</h3>
+        <p>完成一点点也很好啦，普通的一天也值得认真爱自己。</p>
+      </article>
+      <article class="welcome-card card">
+        <span>🎀</span>
+        <h3>小小奖励</h3>
+        <p>写完日记、做完目标之后，别忘了夸一夸今天努力的自己哦！</p>
+      </article>
+    </section>
+
+    <main class="layout">
+      <section class="editor card" id="editorSection">
+        <div class="section-title">
+          <h2>写一篇小日记</h2>
+          <p>写下情绪、人和事，把那些轻轻落在你心上的瞬间留下来。</p>
+        </div>
+
+        <form id="diaryForm">
+          <div class="grid two">
+            <label>
+              日记标题
+              <input type="text" id="title" placeholder="比如：今天也被晚风温柔对待了" required />
+            </label>
+            <label>
+              日期
+              <input type="date" id="date" required />
+            </label>
+          </div>
+
+          <label>
+            今天的心情
+            <div class="mood-wrap" id="moodWrap">
+              <button type="button" class="mood-btn active" data-mood="超开心">🥰 超开心</button>
+              <button type="button" class="mood-btn" data-mood="平静">🌷 平静</button>
+              <button type="button" class="mood-btn" data-mood="有点累">🌙 有点累</button>
+              <button type="button" class="mood-btn" data-mood="想发呆">☁️ 想发呆</button>
+              <button type="button" class="mood-btn" data-mood="灵感很多">✨ 灵感很多</button>
+            </div>
+          </label>
+
+          <label>
+            正文
+            <textarea id="content" rows="8" placeholder="今天发生了什么？有没有什么瞬间，值得你悄悄收藏起来？" required></textarea>
+          </label>
+
+          <label>
+            小标签（用逗号分开）
+            <input type="text" id="tags" placeholder="比如：开心, 朋友, 夜晚, 创作" />
+          </label>
+
+          <label class="image-upload-field">
+            给这篇日记加几张图片吧~
+            <input type="file" id="imageInput" accept="image/*" multiple />
+            <span class="field-tip">支持多选，建议 1～3 张小一点的照片，会更稳一些。</span>
+          </label>
+
+          <div class="image-preview-grid" id="imagePreview"></div>
+
+          <div class="form-actions">
+            <button class="btn primary" type="submit">保存这篇日记</button>
+            <button class="btn secondary" type="button" id="clearForm">清空</button>
+          </div>
+        </form>
+      </section>
+
+      <div class="sidebar-stack">
+        <section class="tasks card">
+          <div class="section-title with-inline">
+            <div>
+              <h2>今日小目标</h2>
+              <p>你今儿想干嘛呀~</p>
+            </div>
+            <span class="soft-badge" id="taskProgressLabel">0 / 0 完成</span>
+          </div>
+
+          <div class="quick-task-row" id="quickTaskRow">
+            <button type="button" class="quick-task-chip" data-task="Go！去运动一下">Go！去运动一下</button>
+            <button type="button" class="quick-task-chip" data-task="整理个家务">整理个家务</button>
+            <button type="button" class="quick-task-chip" data-task="早点休息">早点休息</button>
+            <button type="button" class="quick-task-chip" data-task="今天要开开心心度过！">今天要开开心心度过！</button>
+          </div>
+
+          <form id="taskForm" class="task-form">
+            <label>
+              今天想完成什么？
+              <input type="text" id="taskInput" placeholder="比如：写完一篇日记 / 看30分钟书" required />
+            </label>
+            <div class="grid two small-gap">
+              <label>
+                日期
+                <input type="date" id="taskDate" required />
+              </label>
+              <label>
+                优先级
+                <select id="taskPriority">
+                  <option value="轻松">轻松</option>
+                  <option value="认真">认真</option>
+                  <option value="重要">重要</option>
+                </select>
+              </label>
+            </div>
+            <button class="btn primary wide" type="submit">添加目标</button>
+          </form>
+
+          <div class="progress-block">
+            <div class="progress-top">
+              <span>今日进度</span>
+              <strong id="taskPercent">0%</strong>
+            </div>
+            <div class="progress-bar">
+              <span id="taskProgressBar"></span>
+            </div>
+          </div>
+
+          <div id="taskEmptyState" class="empty-mini">今天还没有写下目标哦。</div>
+          <div class="task-list" id="taskList"></div>
+        </section>
+
+        <section class="ideas card">
+          <div class="section-title">
+            <h2>灵感便签墙</h2>
+            <p>随手写下一句话、一个片段、一点奇怪又可爱的念头。</p>
+          </div>
+
+          <div class="idea-input-row">
+            <textarea id="ideaInput" rows="3" placeholder="比如：想把晚霞折成一封粉色的信。"></textarea>
+            <button class="btn primary" id="addIdeaBtn">贴上便签</button>
+          </div>
+
+          <div class="prompt-card">
+            <p>今日创作提示</p>
+            <strong id="promptText">如果今天是一种天气，它会是什么样子？</strong>
+            <button class="btn secondary tiny-btn" id="changePromptBtn">换一句</button>
+          </div>
+
+          <div class="idea-board" id="ideaBoard"></div>
+        </section>
+      </div>
+
+      <section class="list card full">
+        <div class="section-title with-actions">
+          <div>
+            <h2>日记回忆簿</h2>
+            <p>每一篇都在替你留住一个真实存在过的时刻。</p>
+          </div>
+          <div class="toolbar">
+            <button class="btn tiny-btn secondary" id="exportBtn">导出备份</button>
+            <label class="btn tiny-btn secondary upload-btn">
+              导入备份
+              <input type="file" id="importFile" accept="application/json" hidden />
+            </label>
+          </div>
+        </div>
+
+        <div class="search-row">
+          <input type="text" id="searchInput" placeholder="搜索标题、内容、心情或标签..." />
+        </div>
+
+        <div id="emptyState" class="empty-state">
+          <div>🫧</div>
+          <p>这里还没有日记，写下第一篇吧。</p>
+        </div>
+
+        <div id="entriesList" class="entries"></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="page-bottom-decor" aria-hidden="true">
+    <span class="bottom-sparkle sparkle-1">✦</span>
+    <span class="bottom-sparkle sparkle-2">✿</span>
+    <span class="bottom-sparkle sparkle-3">❀</span>
+    <span class="bottom-sparkle sparkle-4">✧</span>
+  </div>
+
+  <dialog id="messageDialog" class="message-dialog">
+    <div class="dialog-card">
+      <h3>今日小纸条</h3>
+      <p>
+        愿你今天写下的每一个字，都能替你留住一点心动；
+        愿你正在做的每一件小事，都会慢慢长成你喜欢的样子。
+      </p>
+      <button class="btn primary" id="closeDialog">收到啦</button>
+    </div>
+  </dialog>
+  <dialog id="birthdayDialog" class="birthday-dialog">
+  <div class="birthday-card">
+    <button class="icon-btn birthday-close" id="birthdayCloseBtn" title="关闭">✕</button>
+
+    <div class="birthday-sparkles" aria-hidden="true">
+      <span>✦</span>
+      <span>♡</span>
+      <span>✿</span>
+    </div>
+
+    <div class="birthday-cake" aria-hidden="true">
+      <span class="candle candle-1"></span>
+      <span class="candle candle-2"></span>
+      <span class="candle candle-3"></span>
+      <span class="flame flame-1"></span>
+      <span class="flame flame-2"></span>
+      <span class="flame flame-3"></span>
+      <span class="icing"></span>
+      <span class="cake-body"></span>
+      <span class="plate"></span>
+    </div>
+
+    <p class="birthday-kicker">Special Day · 04 / 20</p>
+
+    <h3 class="birthday-title">
+      <span>生日快乐！</span>
+      <span>戴静雯！</span>
+    </h3>
+
+    <p class="birthday-text">
+      愿你这一岁也被温柔接住，<br>
+      愿你的可爱、真诚和闪光，永远都被认真珍惜。
+    </p>
+
+    <button class="btn primary birthday-btn" id="birthdayConfirmBtn">收下这张小贺卡</button>
+  </div>
+</dialog>
+  <dialog id="confirmDialog" class="confirm-dialog">
+  <div class="confirm-card">
+    <div class="confirm-deco">
+      <span>🌿</span>
+      <span>☁</span>
+      <span>✿</span>
+    </div>
+
+    <p class="confirm-kicker">删除</p>
+    <h3 id="confirmTitle">确定要删除吗？</h3>
+    <p id="confirmText">
+      这条内容删除后就找不回来啦，要不要再想一下？
+    </p>
+
+    <div class="confirm-actions">
+      <button class="btn confirm-cancel-btn" id="confirmCancelBtn" type="button">再想想</button>
+      <button class="btn confirm-ok-btn" id="confirmOkBtn" type="button">确定删除</button>
+    </div>
+  </div>
+</dialog>
+
+  <template id="entryTemplate">
+    <article class="entry-item">
+      <div class="entry-top">
+        <div>
+          <h3 class="entry-title"></h3>
+          <p class="entry-meta"></p>
+        </div>
+        <button class="icon-btn delete-entry" title="删除">✕</button>
+      </div>
+      <p class="entry-content"></p>
+      <details class="entry-gallery">
+        <summary class="gallery-toggle">展开照片（0）</summary>
+        <div class="entry-images"></div>
+      </details>
+      <div class="entry-tags"></div>
+    </article>
+  </template>
+
+  <template id="ideaTemplate">
+    <div class="idea-note">
+      <p class="idea-text"></p>
+      <button class="icon-btn delete-idea" title="删除">✕</button>
+    </div>
+  </template>
+
+  <template id="taskTemplate">
+    <article class="task-item">
+      <label class="task-check-row">
+        <input type="checkbox" class="task-checkbox" />
+        <span class="task-main">
+          <strong class="task-text"></strong>
+          <span class="task-meta"></span>
+        </span>
+      </label>
+      <div class="task-actions">
+        <span class="task-priority"></span>
+        <button class="icon-btn delete-task" title="删除">✕</button>
+      </div>
+    </article>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
