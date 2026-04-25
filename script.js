@@ -1,7 +1,7 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-const supabaseUrl = 'https://kfgttceymybkyytedlkp.supabase.co'
-const supabaseKey = 'sb_publishable_QfeXhfxVvSLxZM68Sq3ofQ_1_O9PEXs'
+const supabaseUrl = 'https://ebfojtadbnbzkroitlcm.supabase.co'
+const supabaseKey = 'sb_publishable_i_Hal-X2Gvte10jJjXwvGA_aPpBJz-b'
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 const STORAGE_KEY = 'cute-diary-entries-v4';
