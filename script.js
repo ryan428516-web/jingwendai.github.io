@@ -5,7 +5,19 @@ import {
   signInWithEmailAndPassword,
   updatePassword
 } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js';
-
+import {
+  getFirestore,
+  collection,
+  doc,
+  addDoc,
+  setDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  orderBy,
+  onSnapshot,
+  serverTimestamp
+} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
 const firebaseConfig = {
   apiKey: "AIzaSyAtk1krIZaiCfuctYIN2qU8Kxz5HDSbimM",
   authDomain: "dai-s-gift.firebaseapp.com",
@@ -18,6 +30,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 const STORAGE_KEY = 'cute-diary-entries-v4';
 const IDEAS_KEY = 'cute-diary-ideas-v2';
@@ -26,6 +39,104 @@ const LOGIN_NAME = '戴静雯';
 const OWNER_EMAIL = 'ryan428516@gmail.com';
 const SECRET_NAME = 'douko';
 const SECRET_PASSWORD = '20050428';
+
+function requireUser() {
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error('当前还没有登录用户');
+  }
+  return user;
+}
+
+function entriesCol() {
+  const user = requireUser();
+  return collection(db, 'users', user.uid, 'entries');
+}
+
+function tasksCol() {
+  const user = requireUser();
+  return collection(db, 'users', user.uid, 'tasks');
+}
+
+function ideasCol() {
+  const user = requireUser();
+  return collection(db, 'users', user.uid, 'ideas');
+}
+
+let unsubscribeEntries = null;
+let unsubscribeTasks = null;
+let unsubscribeIdeas = null;
+
+function stopCloudSync() {
+  if (unsubscribeEntries) {
+    unsubscribeEntries();
+    unsubscribeEntries = null;
+  }
+  if (unsubscribeTasks) {
+    unsubscribeTasks();
+    unsubscribeTasks = null;
+  }
+  if (unsubscribeIdeas) {
+    unsubscribeIdeas();
+    unsubscribeIdeas = null;
+  }
+}
+
+function startCloudSync() {
+  stopCloudSync();
+
+  const entriesQuery = query(entriesCol(), orderBy('createdAt', 'desc'));
+  unsubscribeEntries = onSnapshot(entriesQuery, (snapshot) => {
+    entries = snapshot.docs.map((docSnap) => {
+      const data = docSnap.data();
+      return {
+        id: docSnap.id,
+        title: data.title || '',
+        content: data.content || '',
+        mood: data.mood || '',
+        date: data.date || '',
+        tags: data.tags || [],
+        images: data.images || [],
+        createdAt: data.createdAt || null,
+        photoExpanded: false
+      };
+    });
+
+    renderEntries(searchInput.value);
+    renderCounts();
+  });
+
+  const tasksQuery = query(tasksCol(), orderBy('createdAt', 'desc'));
+  unsubscribeTasks = onSnapshot(tasksQuery, (snapshot) => {
+    tasks = snapshot.docs.map((docSnap) => {
+      const data = docSnap.data();
+      return {
+        id: docSnap.id,
+        text: data.text || '',
+        done: !!data.done,
+        createdAt: data.createdAt || null
+      };
+    });
+
+    renderTasks();
+    renderCounts();
+  });
+
+  const ideasQuery = query(ideasCol(), orderBy('createdAt', 'desc'));
+  unsubscribeIdeas = onSnapshot(ideasQuery, (snapshot) => {
+    ideas = snapshot.docs.map((docSnap) => {
+      const data = docSnap.data();
+      return {
+        id: docSnap.id,
+        text: data.text || '',
+        createdAt: data.createdAt || null
+      };
+    });
+
+    renderIdeas();
+    renderCounts();
+  });
+}
 
 
 const prompts = [
@@ -305,6 +416,7 @@ function showApp(name = LOGIN_NAME) {
   void appShell.offsetWidth;
   appShell.classList.add('app-enter');
   displayName.textContent = name;
+  startCloudSync();
   window.scrollTo(0, 0);
 }
 
@@ -322,6 +434,8 @@ function showSecretLetter() {
 function showLogin() {
   document.body.classList.remove('logged-in', 'secret-mode');
   document.body.classList.add('logged-out');
+
+  stopCloudSync();
 
   appShell.classList.add('hidden');
   secretScreen.classList.add('hidden');
@@ -489,18 +603,20 @@ function renderEntries(filter = '') {
     node.querySelector('.delete-entry').addEventListener('click', async () => {
   const ok = await askConfirm({
     title: '要删除这篇回忆吗？',
-    text: `《${entry.title}》删除后就找不回来喽，不过它现在还可以留下来陪你。`,
+    text: `《${entry.title}》删除后就找不回来啦，不过它现在还可以留下来陪你。`,
     okText: '确定删除',
     cancelText: '先留下'
   });
 
   if (!ok) return;
 
-  entries = entries.filter((item) => item.id !== entry.id);
-  saveAll();
-  renderEntries(searchInput.value);
-  renderCounts();
-  });
+  try {
+    await deleteDoc(doc(entriesCol(), entry.id));
+  } catch (error) {
+    console.error('删除日记失败：', error);
+    alert('删除失败，请稍后再试。');
+  }
+});
 
     entriesList.appendChild(node);
   });
@@ -511,25 +627,31 @@ function renderIdeas() {
 
   ideas.forEach((idea) => {
     const node = ideaTemplate.content.cloneNode(true);
+
     node.querySelector('.idea-text').textContent = idea.text;
+
     node.querySelector('.delete-idea').addEventListener('click', async () => {
-  const ok = await askConfirm({
-    title: '要撕掉这张便签吗？',
-    text: '这张灵感便签删掉以后就看不到啦，确定要删除吗？',
-    okText: '删除便签',
-    cancelText: '再想想'
-  });
+      const ok = await askConfirm({
+        title: '要撕掉这张便签吗？',
+        text: '这张灵感便签删掉以后就看不到啦，确定要删除吗？',
+        okText: '删除便签',
+        cancelText: '再想想'
+      });
 
-  if (!ok) return;
+      if (!ok) return;
 
-  ideas = ideas.filter((item) => item.id !== idea.id);
-  saveAll();
-  renderIdeas();
-  renderCounts();
-});
+      try {
+        await deleteDoc(doc(ideasCol(), idea.id));
+      } catch (error) {
+        console.error('删除便签失败：', error);
+        alert('删除失败，请稍后再试。');
+      }
+    });
+
     ideaBoard.appendChild(node);
   });
 }
+
 
 function renderTasks() {
   taskList.innerHTML = '';
@@ -550,14 +672,18 @@ function renderTasks() {
     node.querySelector('.task-meta').textContent = `${formatDate(task.date)} · ${task.done ? '已完成' : '进行中'}`;
     node.querySelector('.task-priority').textContent = task.priority;
 
-    checkbox.addEventListener('change', () => {
-      tasks = tasks.map((item) => item.id === task.id ? { ...item, done: checkbox.checked } : item);
-      saveAll();
-      renderTasks();
-      renderCounts();
+    checkbox.addEventListener('change', async () => {
+  try {
+    await updateDoc(doc(tasksCol(), task.id), {
+      done: checkbox.checked
     });
+  } catch (error) {
+    console.error('更新任务状态失败：', error);
+    alert('更新失败，请稍后再试。');
+  }
+});
 
-   node.querySelector('.delete-task').addEventListener('click', async () => {
+  node.querySelector('.delete-task').addEventListener('click', async () => {
   const ok = await askConfirm({
     title: '要删除这个小目标吗？',
     text: `“${task.text}” 会从今日目标里消失哦，确定要删掉它吗？`,
@@ -567,10 +693,12 @@ function renderTasks() {
 
   if (!ok) return;
 
-  tasks = tasks.filter((item) => item.id !== task.id);
-  saveAll();
-  renderTasks();
-  renderCounts();
+  try {
+    await deleteDoc(doc(tasksCol(), task.id));
+  } catch (error) {
+    console.error('删除目标失败：', error);
+    alert('删除失败，请稍后再试。');
+  }
 });
 
     taskList.appendChild(node);
@@ -600,7 +728,7 @@ function randomPrompt() {
 
 changePromptBtn.addEventListener('click', randomPrompt);
 
-diaryForm.addEventListener('submit', (event) => {
+diaryForm.addEventListener('submit', async (event) => {
   event.preventDefault();
 
   const title = titleInput.value.trim();
@@ -613,69 +741,89 @@ diaryForm.addEventListener('submit', (event) => {
 
   if (!title || !date || !content) return;
 
-  entries.unshift({
-    id: crypto.randomUUID(),
-    title,
-    date,
-    mood: selectedMood,
-    content,
-    tags,
-    images: [...pendingImages]
-  });
+  const submitBtn = diaryForm.querySelector('button[type="submit"]');
+  if (submitBtn) submitBtn.disabled = true;
 
   try {
-    saveAll();
-  } catch (error) {
-    entries.shift();
-    alert('图片有一点大，浏览器本地空间不够了。可以少放几张，或者换小一点的图再试试。');
-    return;
-  }
+    await addDoc(entriesCol(), {
+      title,
+      date,
+      mood: selectedMood,
+      content,
+      tags,
+      images: [...pendingImages],
+      createdAt: serverTimestamp()
+    });
 
-  renderEntries(searchInput.value);
-  renderCounts();
-  diaryForm.reset();
-  dateInput.value = todayString();
-  tagsInput.value = '';
-  contentInput.value = '';
-  titleInput.value = '';
-  resetImageInput();
-  selectedMood = '超开心';
-  moodButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.mood === '超开心'));
+    diaryForm.reset();
+    dateInput.value = todayString();
+    tagsInput.value = '';
+    contentInput.value = '';
+    titleInput.value = '';
+    resetImageInput();
+    selectedMood = '超开心';
+    moodButtons.forEach((btn) =>
+      btn.classList.toggle('active', btn.dataset.mood === '超开心')
+    );
+  } catch (error) {
+    console.error('保存日记失败：', error);
+    alert('保存日记失败，请稍后再试。');
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
+  }
 });
 
-addIdeaBtn.addEventListener('click', () => {
+addIdeaBtn.addEventListener('click', async () => {
   const text = ideaInput.value.trim();
   if (!text) return;
 
-  ideas.unshift({ id: crypto.randomUUID(), text });
-  saveAll();
-  renderIdeas();
-  renderCounts();
-  ideaInput.value = '';
+  addIdeaBtn.disabled = true;
+
+  try {
+    await addDoc(ideasCol(), {
+      text,
+      createdAt: serverTimestamp()
+    });
+
+    ideaInput.value = '';
+  } catch (error) {
+    console.error('保存便签失败：', error);
+    alert('保存便签失败，请稍后再试。');
+  } finally {
+    addIdeaBtn.disabled = false;
+  }
 });
 
-taskForm.addEventListener('submit', (event) => {
+taskForm.addEventListener('submit', async (event) => {
   event.preventDefault();
+
   const text = taskInput.value.trim();
   const date = taskDate.value;
   const priority = taskPriority.value;
 
   if (!text || !date) return;
 
-  tasks.unshift({
-    id: crypto.randomUUID(),
-    text,
-    date,
-    priority,
-    done: false
-  });
+  const submitBtn = taskForm.querySelector('button[type="submit"]');
+  if (submitBtn) submitBtn.disabled = true;
 
-  saveAll();
-  renderTasks();
-  renderCounts();
-  taskForm.reset();
-  taskDate.value = todayString();
-  taskPriority.value = '轻松';
+  try {
+    await addDoc(tasksCol(), {
+      text,
+      date,
+      priority,
+      done: false,
+      createdAt: serverTimestamp()
+    });
+
+    taskForm.reset();
+    taskDate.value = todayString();
+    taskPriority.value = '轻松';
+  } catch (error) {
+    console.error('保存目标失败：', error);
+    alert('保存目标失败，请稍后再试。');
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
+  }
 });
 
 searchInput.addEventListener('input', (event) => {
