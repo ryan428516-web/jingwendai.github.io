@@ -1,8 +1,14 @@
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+const supabaseUrl = 'https://evbyxjaqkkorichorqna.supabase.co'
+const supabaseKey = 'sb_publishable_zz6Sxa8N-Sn-n7Vpyc53_Q_EscuoDMb'
+const supabase = createClient(supabaseUrl, supabaseKey)
+
 const STORAGE_KEY = 'cute-diary-entries-v4';
 const IDEAS_KEY = 'cute-diary-ideas-v2';
 const TASKS_KEY = 'cute-diary-tasks-v2';
 const LOGIN_NAME = '戴静雯';
-const LOGIN_PASSWORD = '20040420';
+const OWNER_EMAIL = 'ryan428516@gmail.com';
 const SECRET_NAME = 'douko';
 const SECRET_PASSWORD = '20050428';
 
@@ -15,7 +21,8 @@ const prompts = [
   '今天有没有特别开心的瞬间呀',
   '如果今天有难过的事儿也没关系，快到嘴里来~',
   '嘿，小妞，你今天很酷哦~，冷cool~',
-  '有没有惊喜想留给未来的自己呀~'
+  '有没有惊喜想留给未来的自己呀~',
+  '当你看到下雨时，别难过哦，那是神明在世间燃起的烟花'
 ];
 
 const loginScreen = document.getElementById('loginScreen');
@@ -303,24 +310,34 @@ function showLogin() {
   setTimeout(() => loginName.focus(), 30);
 }
 
-loginForm.addEventListener('submit', (event) => {
+loginForm.addEventListener('submit', async (event) => {
   event.preventDefault();
+
   const name = loginName.value.trim();
   const password = loginPassword.value.trim();
-
-  if (name === LOGIN_NAME && password === LOGIN_PASSWORD) {
-    loginError.textContent = '';
-    showApp(name);
-    return;
-  }
-
   if (name === SECRET_NAME && password === SECRET_PASSWORD) {
     loginError.textContent = '';
     showSecretLetter();
     return;
   }
 
-  loginError.textContent = '名称或密码不对哦，再试一次吧。';
+  if (name !== LOGIN_NAME) {
+    loginError.textContent = '名称或密码不对哦，再试一次吧。';
+    return;
+  }
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email: OWNER_EMAIL,
+    password
+  });
+
+  if (error) {
+    loginError.textContent = '名称或密码不对哦，再试一次吧。';
+    return;
+  }
+
+  loginError.textContent = '';
+  showApp(name);
 });
 
 logoutBtn.addEventListener('click', showLogin);
