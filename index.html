@@ -118,6 +118,7 @@
       </div>
       <div class="topbar-actions">
         <span class="today-pill" id="todayLabel"></span>
+        <button class="btn secondary" id="changePasswordBtn" type="button">修改密码</button>
         <button class="btn secondary tiny-btn" id="logoutBtn">退出登录</button>
       </div>
     </header>
@@ -462,6 +463,36 @@
   </template>
 
   <script type="module" src="script.js"></script>
+  <dialog id="changePasswordDialog" class="change-password-dialog">
+  <div class="change-password-card">
+    <button class="icon-btn password-close" id="passwordCloseBtn" title="关闭">✕</button>
+
+    <p class="password-kicker">账号与安全</p>
+    <h3>修改密码</h3>
+    <p class="password-tip">
+      确定好想要修改的咒语哦~芝麻开门！
+    </p>
+
+    <form id="changePasswordForm" class="change-password-form">
+      <label>
+        <span>新密码</span>
+        <input id="newPasswordInput" type="password" placeholder="请输入新的密码" required minlength="6" />
+      </label>
+
+      <label>
+        <span>确认新密码</span>
+        <input id="confirmPasswordInput" type="password" placeholder="请再输入一次" required minlength="6" />
+      </label>
+
+      <p id="changePasswordMessage" class="password-message"></p>
+
+      <div class="password-actions">
+        <button class="btn secondary" id="passwordCancelBtn" type="button">先不改</button>
+        <button class="btn primary" type="submit">保存新密码</button>
+      </div>
+    </form>
+  </div>
+</dialog>
 </body>
 </html>
 

@@ -38,6 +38,14 @@ const imageInput = document.getElementById('imageInput');
 const imagePreview = document.getElementById('imagePreview');
 const todayLabel = document.getElementById('todayLabel');
 const logoutBtn = document.getElementById('logoutBtn');
+const changePasswordBtn = document.getElementById('changePasswordBtn');
+const changePasswordDialog = document.getElementById('changePasswordDialog');
+const passwordCloseBtn = document.getElementById('passwordCloseBtn');
+const passwordCancelBtn = document.getElementById('passwordCancelBtn');
+const changePasswordForm = document.getElementById('changePasswordForm');
+const newPasswordInput = document.getElementById('newPasswordInput');
+const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+const changePasswordMessage = document.getElementById('changePasswordMessage');
 
 const diaryForm = document.getElementById('diaryForm');
 const titleInput = document.getElementById('title');
@@ -342,6 +350,56 @@ loginForm.addEventListener('submit', async (event) => {
 
 logoutBtn.addEventListener('click', showLogin);
 secretBackBtn?.addEventListener('click', showLogin);
+
+changePasswordBtn?.addEventListener('click', () => {
+  changePasswordMessage.textContent = '';
+  changePasswordForm.reset();
+  changePasswordDialog.showModal();
+});
+
+passwordCloseBtn?.addEventListener('click', () => {
+  changePasswordDialog.close();
+});
+
+passwordCancelBtn?.addEventListener('click', () => {
+  changePasswordDialog.close();
+});
+
+changePasswordForm?.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const newPassword = newPasswordInput.value.trim();
+  const confirmPassword = confirmPasswordInput.value.trim();
+
+  if (newPassword.length < 6) {
+    changePasswordMessage.textContent = '新密码至少要 6 位哦。';
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    changePasswordMessage.textContent = '两次输入的新密码不一致。';
+    return;
+  }
+
+  changePasswordMessage.textContent = '正在保存...';
+
+  const { error } = await supabase.auth.updateUser({
+    password: newPassword
+  });
+
+  if (error) {
+    changePasswordMessage.textContent = `修改失败：${error.message}`;
+    return;
+  }
+
+  changePasswordMessage.textContent = '密码修改成功啦！';
+
+  setTimeout(() => {
+    changePasswordDialog.close();
+    changePasswordForm.reset();
+    changePasswordMessage.textContent = '';
+  }, 900);
+});
 
 moodButtons.forEach((btn) => {
   btn.addEventListener('click', () => {

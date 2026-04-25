@@ -1594,3 +1594,107 @@ body.secret-mode .app-shell {
 #secretBackBtn {
   min-width: 170px;
 }
+.change-password-dialog {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.change-password-dialog::backdrop {
+  background: rgba(125, 96, 114, 0.22);
+  backdrop-filter: blur(6px);
+}
+
+.change-password-card {
+  width: min(92vw, 440px);
+  padding: 28px 24px 24px;
+  border-radius: 30px;
+  border: 1.5px solid rgba(255, 220, 233, 0.95);
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,0.7), transparent 28%),
+    linear-gradient(180deg, #fffafc 0%, #fff4f8 55%, #fffafc 100%);
+  box-shadow: 0 24px 60px rgba(236, 162, 193, 0.18);
+  position: relative;
+  text-align: center;
+}
+
+.password-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+}
+
+.password-kicker {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: #fff2f7;
+  border: 1px solid #ffdbe8;
+  color: #cc84a2;
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.change-password-card h3 {
+  margin: 0 0 10px;
+  font-size: 1.7rem;
+  color: #5f4d66;
+}
+
+.password-tip {
+  margin: 0 0 18px;
+  color: #8f7c91;
+  line-height: 1.8;
+  font-size: 0.95rem;
+}
+
+.change-password-form {
+  display: grid;
+  gap: 14px;
+  text-align: left;
+}
+
+.change-password-form label {
+  display: grid;
+  gap: 8px;
+}
+
+.change-password-form span {
+  font-size: 0.94rem;
+  color: #725f74;
+  font-weight: 600;
+}
+
+.change-password-form input {
+  width: 100%;
+  border: 1.5px solid #f0d7e2;
+  background: rgba(255,255,255,0.92);
+  border-radius: 16px;
+  padding: 12px 14px;
+  font-size: 0.98rem;
+  outline: none;
+}
+
+.change-password-form input:focus {
+  border-color: #e7a9c4;
+  box-shadow: 0 0 0 4px rgba(247, 198, 220, 0.18);
+}
+
+.password-message {
+  min-height: 22px;
+  margin: 0;
+  font-size: 0.92rem;
+  text-align: center;
+  color: #c56a92;
+}
+
+.password-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
