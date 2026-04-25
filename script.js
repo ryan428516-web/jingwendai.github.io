@@ -1,8 +1,23 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updatePassword
+} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js';
 
-const supabaseUrl = 'https://ebfojtadbnbzkroitlcm.supabase.co'
-const supabaseKey = 'sb_publishable_i_Hal-X2Gvte10jJjXwvGA_aPpBJz-b'
-const supabase = createClient(supabaseUrl, supabaseKey)
+const firebaseConfig = {
+  apiKey: "AIzaSyAtk1krIZaiCfuctYIN2qU8Kxz5HDSbimM",
+  authDomain: "dai-s-gift.firebaseapp.com",
+  projectId: "dai-s-gift",
+  storageBucket: "dai-s-gift.firebasestorage.app",
+  messagingSenderId: "792807208761",
+  appId: "1:792807208761:web:79dcd9c9c445fc9fae9ae8",
+  measurementId: "G-SEV7XHYYBR"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
 const STORAGE_KEY = 'cute-diary-entries-v4';
 const IDEAS_KEY = 'cute-diary-ideas-v2';
@@ -11,6 +26,7 @@ const LOGIN_NAME = '戴静雯';
 const OWNER_EMAIL = 'ryan428516@gmail.com';
 const SECRET_NAME = 'douko';
 const SECRET_PASSWORD = '20050428';
+
 
 const prompts = [
   '如果今天是一种天气，它会是什么样子？',
@@ -323,6 +339,7 @@ loginForm.addEventListener('submit', async (event) => {
 
   const name = loginName.value.trim();
   const password = loginPassword.value.trim();
+
   if (name === SECRET_NAME && password === SECRET_PASSWORD) {
     loginError.textContent = '';
     showSecretLetter();
@@ -334,18 +351,14 @@ loginForm.addEventListener('submit', async (event) => {
     return;
   }
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email: OWNER_EMAIL,
-    password
-  });
-
-  if (error) {
+  try {
+    await signInWithEmailAndPassword(auth, OWNER_EMAIL, password);
+    loginError.textContent = '';
+    showApp(name);
+  } catch (error) {
+    console.error('Firebase login error:', error);
     loginError.textContent = '名称或密码不对哦，再试一次吧。';
-    return;
   }
-
-  loginError.textContent = '';
-  showApp(name);
 });
 
 logoutBtn.addEventListener('click', showLogin);
@@ -383,15 +396,8 @@ changePasswordForm?.addEventListener('submit', async (event) => {
 
   changePasswordMessage.textContent = '正在保存...';
 
-  const { error } = await supabase.auth.updateUser({
-    password: newPassword
-  });
-
-  if (error) {
-    changePasswordMessage.textContent = `修改失败：${error.message}`;
-    return;
-  }
-
+  try {
+  await updatePassword(auth.currentUser, newPassword);
   changePasswordMessage.textContent = '密码修改成功啦！';
 
   setTimeout(() => {
@@ -399,6 +405,11 @@ changePasswordForm?.addEventListener('submit', async (event) => {
     changePasswordForm.reset();
     changePasswordMessage.textContent = '';
   }, 900);
+} catch (error) {
+  console.error('修改密码失败：', error);
+  changePasswordMessage.textContent = `修改失败：${error.message}`;
+  return;
+}
 });
 
 moodButtons.forEach((btn) => {
